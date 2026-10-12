@@ -1,5 +1,5 @@
 """QR Medic - Emergency Student Medical Profile System (Flask + MySQL backend), v2."""
-import os, json, base64, secrets, smtplib, socket, threading, urllib.parse, urllib.request
+import os, json, base64, secrets, smtplib, socket, threading, urllib.error, urllib.parse, urllib.request
 from datetime import date, datetime, timedelta
 from email.message import EmailMessage
 from flask import Flask, Response, jsonify, request, send_from_directory, session
@@ -103,9 +103,12 @@ def send_mail(to, subject, body):
             req = urllib.request.Request("https://api.brevo.com/v3/smtp/email", data=json.dumps(
                 {"sender": {"name": "QR Medic", "email": MAIL_FROM}, "to": [{"email": to}], "subject": subject, "textContent": body}).encode(),
                 headers={"api-key": BREVO_API_KEY, "content-type": "application/json", "accept": "application/json"})
-            urllib.request.urlopen(req, timeout=15)
+            r = urllib.request.urlopen(req, timeout=15)
+            print(f"[Brevo] accepted email '{subject}' to {to} (HTTP {r.status})")
+        except urllib.error.HTTPError as e:
+            print("[Brevo error]", e.code, e.read().decode("utf-8", "ignore"))
         except Exception as e:
-            print("[Brevo error]", getattr(e, "read", lambda: e)())
+            print("[Brevo error]", repr(e))
         return
     if not SMTP_HOST:
         print(f"\n[EMAIL demo - set SMTP_* to really send] to={to}\n  {subject}\n  {body}\n"); return
@@ -244,6 +247,7 @@ def change_password():
 def forgot():
     email = ((request.get_json(force=True) or {}).get("email") or "").strip().lower()
     u = q("SELECT * FROM users WHERE email=%s", (email,), True)
+    print(f"[forgot] reset requested for {email!r}: {'account found' if u else 'NO ACCOUNT WITH THIS EMAIL'}")
     if u:
         tok = secrets.token_urlsafe(24)
         q("UPDATE users SET reset_token=%s, reset_exp=%s WHERE id=%s", (tok, datetime.now() + timedelta(minutes=30), u["id"]))
@@ -397,6 +401,7 @@ def scan_location(sid):
     bg(notify_guardian, u["ecp"], f"QR Medic: live location of the person who scanned {u['name']}'s QR: https://maps.google.com/?q={loc}")
     return jsonify(ok=True)
 
+print(f"[startup] Brevo key set: {bool(BREVO_API_KEY)} | MAIL_FROM: {MAIL_FROM or '(empty)'}")
 init_db()   # also runs under gunicorn when deployed
 
 if __name__ == "__main__":
