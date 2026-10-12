@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QR Medic – Emergency Student Medical Profile System</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&family=Noto+Sans+Devanagari&family=Noto+Sans+Kannada&family=Noto+Sans+Tamil&family=Noto+Sans+Telugu&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#eef4f5;--ink:#0d3b43;--mut:#5b7a80;--card:#fff;--tl:#0f8b8d;--tl2:#dff1f1;--red:#e63946;--line:#d3e2e4;--r:18px;--side:#0d3b43;--btn:#0d3b43;--ind:'Noto Sans Devanagari','Noto Sans Kannada','Noto Sans Tamil','Noto Sans Telugu'}
+[data-theme=dark]{--bg:#0a1a1e;--ink:#e3f2f2;--mut:#8fb3b8;--card:#12292e;--tl:#2bb5b8;--tl2:#1a3b41;--line:#27474d;--side:#06151a;--btn:#1d7f82}
+*{box-sizing:border-box;margin:0}
+body{font:15px/1.5 'DM Sans',var(--ind),system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+h1,h2,h3{font-family:'Bricolage Grotesque',var(--ind),system-ui,sans-serif;letter-spacing:-.02em}
+h2{font-size:26px;margin-bottom:4px}h3{font-size:17px;margin-bottom:10px}
+.mut{color:var(--mut)}.sm{font-size:13px}
+button,.btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 16px;background:var(--btn);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,.btn:hover{background:var(--tl)}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--tl);outline-offset:2px}
+.b2{background:var(--tl2);color:var(--ink)}.b2:hover{background:#c8e6e6}.bred{background:var(--red)}.bred:hover{background:#c22f3b}
+label{display:block;font-weight:500;font-size:13px;margin:0 0 12px}
+input,select,textarea{width:100%;font:inherit;padding:10px 12px;margin-top:4px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+textarea{min-height:70px}
+.auth{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
+.hero{background:var(--side);color:#e7f6f6;padding:56px;display:flex;flex-direction:column;justify-content:center;gap:22px;position:relative;overflow:hidden}
+.hero h1{font-size:clamp(34px,5vw,56px);line-height:1.02;font-weight:800}
+.hero p{max-width:440px;color:#a9cfd2;font-size:17px}
+.pass{background:#fff;color:var(--ink);border-radius:20px;padding:20px 22px;max-width:380px;box-shadow:0 20px 50px #0006;transform:rotate(-2deg)}
+.pass .row{display:flex;gap:16px;align-items:center}.pass .qrp{width:96px;height:96px;background:repeating-conic-gradient(var(--ink) 0 25%,#fff 0 50%) 0 0/24px 24px;border-radius:8px;flex:none}
+.pass b{font-family:'Bricolage Grotesque';font-size:19px}.pass .blood{display:inline-block;background:var(--red);color:#fff;font-weight:700;border-radius:8px;padding:1px 9px;margin-top:6px}
+.form{display:flex;align-items:center;justify-content:center;padding:32px}.form>div{width:100%;max-width:400px}
+.tabs{display:flex;gap:6px;background:var(--tl2);padding:5px;border-radius:14px;margin:18px 0}.tabs button{flex:1;background:none;color:var(--ink)}.tabs .on{background:var(--card);box-shadow:0 2px 8px #0002}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.side{background:var(--side);color:#cfe8e9;padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.side .logo{font:800 22px 'Bricolage Grotesque';color:#fff;padding:0 10px 16px}.side .logo i{color:#5fd0d2;font-style:normal}
+.side a{display:block;padding:9px 12px;border-radius:10px;color:inherit;text-decoration:none;cursor:pointer;margin-bottom:2px}
+.side a:hover{background:#ffffff14}.side a.on{background:var(--tl);color:#fff;font-weight:700}
+.side small{display:block;padding:14px 12px 4px;color:#7fb1b5;font-size:12px}
+.main{padding:28px 34px;max-width:1080px;width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:18px}
+.card{background:var(--card);border-radius:var(--r);padding:22px;border:1px solid var(--line)}
+.stat{font:800 38px 'Bricolage Grotesque'}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.tag{display:inline-block;border-radius:99px;padding:2px 10px;font-size:12px;font-weight:700;background:var(--tl2)}.tag.r{background:#fde3e5;color:#b1222f}.tag.g{background:#d8f3e2;color:#17693a}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}th{color:var(--mut);font-weight:500}
+.em{border:2px solid var(--red);background:var(--card)}.em .top{background:var(--red);color:#fff;margin:-22px -22px 16px;padding:12px 22px;border-radius:16px 16px 0 0;font:800 18px 'Bricolage Grotesque'}
+.em dl{display:grid;grid-template-columns:130px 1fr;gap:8px 12px}.em dt{color:var(--mut)}.em dd{font-weight:700}
+.sos{width:100%;font-size:22px;padding:22px;background:var(--red);border-radius:18px}
+#toast{position:fixed;right:20px;bottom:20px;display:grid;gap:8px;z-index:9}#toast div{background:var(--ink);color:#fff;padding:12px 16px;border-radius:12px;max-width:320px;box-shadow:0 8px 24px #0004}
+.qrbox{display:flex;gap:22px;align-items:center;flex-wrap:wrap}#qr{padding:12px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.sum{background:var(--tl2);border-radius:14px;padding:14px;white-space:pre-wrap;margin-top:12px}
+.menu{display:none}
+.ic{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--tl2);margin-right:12px;font-size:22px;vertical-align:middle}
+.main h2{display:flex;align-items:center}
+.rp{max-width:520px;margin:0 auto;background:var(--card);min-height:100vh;box-shadow:0 0 60px #0d3b4322}
+.rp-h{background:linear-gradient(160deg,#e63946,#a8202d);color:#fff;text-align:center;padding:36px 22px 60px;position:relative;border-radius:0 0 40px 40px}
+.rp-h h1{font-size:30px;font-weight:800}.rp-h p{opacity:.85}
+.av{width:84px;height:84px;border-radius:50%;background:#fff;color:var(--red);font:800 30px 'Bricolage Grotesque';display:grid;place-items:center;margin:0 auto 12px;position:relative;z-index:1}
+.pulse{position:absolute;left:50%;top:36px;width:84px;height:84px;margin-left:-42px;border-radius:50%;background:#fff5}
+.bl{position:absolute;left:50%;bottom:-34px;transform:translateX(-50%);background:#fff;color:var(--red);border-radius:20px;padding:8px 28px;font:800 34px/1 'Bricolage Grotesque';box-shadow:0 10px 30px #0003}
+.bl small{display:block;font:500 11px 'DM Sans';color:var(--mut);margin-top:2px}
+.rp-b{padding:58px 20px 20px;display:grid;gap:14px}
+.callg{display:block;text-align:center;background:linear-gradient(135deg,#17a34a,#0f7a37);color:#fff;text-decoration:none;font:800 24px 'Bricolage Grotesque';padding:20px;border-radius:20px;box-shadow:0 10px 24px #17a34a55}
+.callg small{display:block;font:500 14px 'DM Sans';opacity:.9;margin-top:2px}.callg.off{background:#9db3b6;box-shadow:none}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.acts .btn{text-align:center}
+.sec{background:var(--bg);border-radius:18px;padding:14px 16px}.sec h3{font-size:14px;color:var(--mut);margin-bottom:8px}
+.chip{display:inline-block;background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:3px 12px;margin:0 6px 6px 0;font-weight:700}.sec.al .chip{border-color:var(--red);color:#b1222f;background:#fff5f5}
+@media(prefers-reduced-motion:no-preference){.pulse{animation:pl 2s ease-out infinite}@keyframes pl{to{transform:scale(1.9);opacity:0}}}
+.bar{background:#0d3b43;color:#fff;text-align:center;font-weight:700;font-size:12px;letter-spacing:.06em;padding:8px}
+.notice{background:#d8f3e2;color:#17693a;border-radius:14px;padding:10px 14px;font-weight:700;font-size:13px}
+.dock{position:sticky;bottom:0;display:grid;grid-template-columns:2fr 1fr;gap:8px;padding:12px;background:var(--card);border-top:1px solid var(--line);backdrop-filter:blur(8px)}
+.dock a{padding:14px;border-radius:14px;text-align:center;color:#fff;text-decoration:none;font-weight:700}
+.sw{display:flex;gap:6px;padding:6px 12px;align-items:center}.sw select{margin:0;padding:6px 8px;width:auto;flex:1}.sw button{padding:6px 10px}.av{overflow:hidden}
+@media(max-width:860px){.auth,.app{grid-template-columns:1fr}.hero{padding:32px 24px}.pass{display:none}.side{position:static;height:auto;display:flex;flex-wrap:wrap;gap:4px}.side .logo,.side small{width:100%}.main{padding:20px 16px}.g2{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:no-preference){.pass{animation:fl 6s ease-in-out infinite}@keyframes fl{50%{transform:rotate(-1deg) translateY(-8px)}}}
+@media print{.side,.no-print,#toast{display:none!important}.app{display:block}.main{padding:0}body{background:#fff}}
+</style></head><body>
+<div id="root"></div><div id="toast"></div>
+<script>
+const $=q=>document.querySelector(q),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const API=async(p,m='GET',b)=>{const r=await fetch('/api'+p,{method:m,headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined,credentials:'same-origin'});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Request failed');return j};
+let me=null,pg='dash',mode='in',SC=[],USERS=[],AUD=[],CFG={};
+const save=()=>API('/me','PUT',me).catch(e=>toast(e.message));
+const now=()=>new Date().toLocaleString();
+const log=a=>{API('/log','POST',{a}).catch(()=>{})};
+function toast(m){const d=document.createElement('div');d.textContent=m;$('#toast').append(d);setTimeout(()=>d.remove(),4500)}
+const F=(id,l,v='',t='text',x='')=>`<label>${l}<input id="${id}" type="${t}" value="${esc(v)}" ${x}></label>`;
+const T=(id,l,v='')=>`<label>${l}<textarea id="${id}">${esc(v)}</textarea></label>`;
+const v=id=>$('#'+id).value.trim();
+
+const K='dash profile medical emerg qr card ai sos hosp vacc rep rem hist notif scan admin users audit out bar callg c112 sendloc alg cond meds doc brief blood login register email pass'.split(' '),D={en:'Dashboard|Student profile|Medical profile|Emergency contacts|My QR code|Emergency card (PDF)|AI emergency summary|SOS & location|Hospital finder|Vaccination records|Medical reports|Medicine reminders|Scan history|QR scan alerts|QR scanner|Admin dashboard|All students|Audit logs|Log out|EMERGENCY MEDICAL ID · VERIFIED BY QR MEDIC|Call guardian|Call 112|Send my location|Allergies|Medical conditions|Regular medicines|Family doctor|Quick brief for responders|Blood group|Log in|Register|Email|Password'.split('|'),hi:'डैशबोर्ड|छात्र प्रोफ़ाइल|मेडिकल प्रोफ़ाइल|आपातकालीन संपर्क|मेरा QR कोड|आपातकालीन कार्ड (PDF)|AI आपातकालीन सारांश|SOS और लोकेशन|अस्पताल खोजें|टीकाकरण रिकॉर्ड|मेडिकल रिपोर्ट|दवा रिमाइंडर|स्कैन इतिहास|QR स्कैन अलर्ट|QR स्कैनर|एडमिन डैशबोर्ड|सभी छात्र|ऑडिट लॉग|लॉग आउट|आपातकालीन मेडिकल आईडी · QR MEDIC द्वारा सत्यापित|अभिभावक को कॉल करें|112 पर कॉल करें|मेरी लोकेशन भेजें|एलर्जी|बीमारियाँ|नियमित दवाएँ|फ़ैमिली डॉक्टर|त्वरित सारांश|रक्त समूह|लॉग इन|रजिस्टर करें|ईमेल|पासवर्ड'.split('|'),kn:'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್|ವಿದ್ಯಾರ್ಥಿ ಪ್ರೊಫೈಲ್|ವೈದ್ಯಕೀಯ ಪ್ರೊಫೈಲ್|ತುರ್ತು ಸಂಪರ್ಕಗಳು|ನನ್ನ QR ಕೋಡ್|ತುರ್ತು ಕಾರ್ಡ್ (PDF)|AI ತುರ್ತು ಸಾರಾಂಶ|SOS ಮತ್ತು ಸ್ಥಳ|ಆಸ್ಪತ್ರೆ ಹುಡುಕಿ|ಲಸಿಕೆ ದಾಖಲೆಗಳು|ವೈದ್ಯಕೀಯ ವರದಿಗಳು|ಔಷಧಿ ಜ್ಞಾಪನೆಗಳು|ಸ್ಕ್ಯಾನ್ ಇತಿಹಾಸ|QR ಸ್ಕ್ಯಾನ್ ಎಚ್ಚರಿಕೆಗಳು|QR ಸ್ಕ್ಯಾನರ್|ಅಡ್ಮಿನ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್|ಎಲ್ಲಾ ವಿದ್ಯಾರ್ಥಿಗಳು|ಆಡಿಟ್ ಲಾಗ್‌ಗಳು|ಲಾಗ್ ಔಟ್|ತುರ್ತು ವೈದ್ಯಕೀಯ ಗುರುತು · QR MEDIC ಪರಿಶೀಲಿಸಿದೆ|ಪೋಷಕರಿಗೆ ಕರೆ ಮಾಡಿ|112 ಗೆ ಕರೆ ಮಾಡಿ|ನನ್ನ ಸ್ಥಳ ಕಳುಹಿಸಿ|ಅಲರ್ಜಿಗಳು|ವೈದ್ಯಕೀಯ ಸಮಸ್ಯೆಗಳು|ನಿಯಮಿತ ಔಷಧಿಗಳು|ಕುಟುಂಬ ವೈದ್ಯರು|ತ್ವರಿತ ಸಾರಾಂಶ|ರಕ್ತದ ಗುಂಪು|ಲಾಗಿನ್|ನೋಂದಣಿ|ಇಮೇಲ್|ಪಾಸ್‌ವರ್ಡ್'.split('|'),ta:'டாஷ்போர்டு|மாணவர் சுயவிவரம்|மருத்துவ சுயவிவரம்|அவசரத் தொடர்புகள்|என் QR குறியீடு|அவசர அட்டை (PDF)|AI அவசர சுருக்கம்|SOS & இருப்பிடம்|மருத்துவமனை தேடல்|தடுப்பூசி பதிவுகள்|மருத்துவ அறிக்கைகள்|மருந்து நினைவூட்டல்கள்|ஸ்கேன் வரலாறு|QR ஸ்கேன் எச்சரிக்கைகள்|QR ஸ்கேனர்|நிர்வாக டாஷ்போர்டு|அனைத்து மாணவர்கள்|தணிக்கைப் பதிவுகள்|வெளியேறு|அவசர மருத்துவ அடையாளம் · QR MEDIC சரிபார்த்தது|பாதுகாவலரை அழைக்கவும்|112 ஐ அழைக்கவும்|என் இருப்பிடத்தை அனுப்பு|ஒவ்வாமைகள்|மருத்துவ நிலைகள்|வழக்கமான மருந்துகள்|குடும்ப மருத்துவர்|விரைவு சுருக்கம்|இரத்த வகை|உள்நுழை|பதிவு செய்|மின்னஞ்சல்|கடவுச்சொல்'.split('|'),te:'డ్యాష్‌బోర్డ్|విద్యార్థి ప్రొఫైల్|వైద్య ప్రొఫైల్|అత్యవసర సంప్రదింపులు|నా QR కోడ్|అత్యవసర కార్డ్ (PDF)|AI అత్యవసర సారాంశం|SOS & లొకేషన్|ఆసుపత్రి శోధన|టీకా రికార్డులు|వైద్య నివేదికలు|మందుల రిమైండర్లు|స్కాన్ చరిత్ర|QR స్కాన్ హెచ్చరికలు|QR స్కానర్|అడ్మిన్ డ్యాష్‌బోర్డ్|అందరు విద్యార్థులు|ఆడిట్ లాగ్‌లు|లాగ్ అవుట్|అత్యవసర వైద్య గుర్తింపు · QR MEDIC ధృవీకరించింది|సంరక్షకుడికి కాల్ చేయండి|112కు కాల్ చేయండి|నా లొకేషన్ పంపండి|అలెర్జీలు|వైద్య పరిస్థితులు|క్రమం తప్పని మందులు|కుటుంబ వైద్యుడు|త్వరిత సారాంశం|రక్త వర్గం|లాగిన్|నమోదు|ఇమెయిల్|పాస్‌వర్డ్'.split('|')};
+let LANG=localStorage.getItem('lang')||'en',RU=null,BR='';
+const tr=k=>(D[LANG]||D.en)[K.indexOf(k)]||D.en[K.indexOf(k)];
+document.documentElement.dataset.theme=localStorage.getItem('dark')=='1'?'dark':'light';
+const langSel=()=>`<select aria-label="Language" onchange="setLang(this.value)">${[['en','English'],['kn','ಕನ್ನಡ'],['hi','हिन्दी'],['ta','தமிழ்'],['te','తెలుగు']].map(([c,n])=>`<option value="${c}" ${LANG==c?'selected':''}>${n}</option>`).join('')}</select>`;
+const sw=()=>`<div class="sw">${langSel()}<button class="b2" aria-label="Dark mode" onclick="toggleDark()">🌓</button></div>`;
+function setLang(x){LANG=x;localStorage.setItem('lang',x);me?app():RU?renderResp():auth()}
+function toggleDark(){const d=document.documentElement.dataset.theme!='dark';document.documentElement.dataset.theme=d?'dark':'light';localStorage.setItem('dark',d?'1':'0')}
+/* ---------- AUTH ---------- */
+function auth(){if(mode=='fp'||mode=='rs')return authAlt();
+$('#root').innerHTML=`<div class="auth"><section class="hero"><h1>One scan tells responders what your body can't.</h1>
+<p>QR Medic keeps every student's blood group, allergies, conditions and emergency contacts one scan away – only when it matters.</p>
+<div class="pass"><div class="row"><div class="qrp"></div><div><b>Aarav Sharma</b><div class="sm mut">BCA · Roll 2231</div><span class="blood">B+</span></div></div><div class="sm" style="margin-top:12px">Allergy: Penicillin · Contact: Mother</div></div></section>
+<section class="form"><div>${sw()}<h2>Welcome to QR Medic</h2><p class="mut">Emergency student medical profile system</p>
+<div class="tabs"><button id="ti" class="${mode=='in'?'on':''}" onclick="mode='in';auth()">${tr('login')}</button><button id="tr" class="${mode=='up'?'on':''}" onclick="mode='up';auth()">${tr('register')}</button></div>
+${mode=='in'?F('em',tr('email'),'','email')+F('pw',tr('pass'),'','password')+'<button style="width:100%" onclick="login()">'+tr('login')+'</button><p class="sm" style="margin-top:12px"><a href="#" onclick="event.preventDefault();mode=\'fp\';auth()">Forgot password?</a></p><p class="sm mut" style="margin-top:6px">Admin demo: admin@qrmedic.com / admin123</p>'
+:F('nm','Full name')+F('em',tr('email'),'','email')+F('pw','Password (min 6)','','password')+'<div class="g2">'+F('roll','Roll number')+F('course','Course / year','BCA – Final')+'</div><button style="width:100%" onclick="reg()">Create account</button>'}
+<p class="sm mut" style="margin-top:14px"><a href="#" onclick="event.preventDefault();pg='scan';guestScan()">Responder? Scan a QR without logging in</a></p></div></section></div>`}
+function authAlt(){const fp=mode=='fp';$('#root').innerHTML=`<div class="form" style="min-height:100vh"><div>${sw()}<h2>${fp?'Forgot password':'Set a new password'}</h2><p class="mut">${fp?'Enter your account email and we will send a reset link.':'Choose a new password (6+ characters).'}</p><br>${fp?F('em','Email','','email')+'<button style="width:100%" onclick="sendReset()">Send reset link</button>':F('pw','New password','','password')+'<button style="width:100%" onclick="doReset()">Save new password</button>'}<p class="sm" style="margin-top:14px"><a href="/">Back to log in</a></p></div></div>`}
+async function sendReset(){try{toast((await API('/forgot','POST',{email:v('em')})).msg)}catch(e){toast(e.message)}}
+async function doReset(){try{await API('/reset','POST',{token:new URLSearchParams(location.search).get('reset'),pass:v('pw')});toast('Password changed. Please log in.');setTimeout(()=>location.href='/',1500)}catch(e){toast(e.message)}}
+async function reg(){const e=v('em').toLowerCase();if(!v('nm')||!e.includes('@')||v('pw').length<6)return toast('Enter a name, valid email and a password of 6+ characters');
+try{me=await API('/register','POST',{name:v('nm'),email:e,pass:v('pw'),roll:v('roll'),course:v('course')});pg='profile';app();toast('Account created. Complete your profile to build your QR.')}catch(x){toast(x.message)}}
+async function login(){try{me=await API('/login','POST',{email:v('em').toLowerCase(),pass:v('pw')});pg=me.role=='admin'?'admin':'dash';app()}catch(x){toast(x.message)}}
+async function logout(){try{await API('/logout','POST')}catch(e){}me=null;auth()}
+
+function photo(i){const f=i.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),s=160,m=Math.min(im.width,im.height);c.width=c.height=s;c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s);me.photo=c.toDataURL('image/jpeg',.8);save().then(()=>app())};im.src=URL.createObjectURL(f)}
+const pwCard=()=>`<div class="card" style="margin-top:16px"><h3>Change password</h3><div class="g2">${F('op','Current password','','password')}${F('np','New password (6+)','','password')}</div><button onclick="chPw()">Update password</button></div>`;
+async function chPw(){try{await API('/password','POST',{old:v('op'),new:v('np')});toast('Password updated');$('#op').value=$('#np').value=''}catch(e){toast(e.message)}}
+async function aiGen(){const e=$('#sm');e.textContent='Writing summary…';try{e.textContent=(await API('/summary')).text}catch(x){e.textContent=summary(me)}}
+/* ---------- SHELL ---------- */
+const NAV=[['dash','Dashboard'],['profile','Student profile'],['medical','Medical profile'],['emerg','Emergency contacts'],['qr','My QR code'],['card','Emergency card (PDF)'],['ai','AI emergency summary'],['sos','SOS & location'],['hosp','Hospital finder'],['vacc','Vaccination records'],['rep','Medical reports'],['rem','Medicine reminders'],['hist','Scan history'],['notif','QR scan alerts'],['scan','QR scanner']];
+async function app(){try{if(me.role=='admin'){[USERS,SC,AUD]=await Promise.all([API('/users'),API('/scans'),API('/audit')])}else SC=await API('/scans')}catch(e){if(/log in/i.test(e.message)){me=null;return auth()}}const adm=me.role=='admin';
+const items=adm?[['admin','Admin dashboard'],['users','All students'],['audit','Audit logs'],['scan','QR scanner']]:NAV;
+$('#root').innerHTML=`<div class="app"><nav class="side"><div class="logo">QR<i>Medic</i></div>${adm?'<small>Admin</small>':''}${items.map(([k,n])=>`<a class="${k==pg?'on':''}" tabindex=0 onclick="pg='${k}';app()">${IC[k]||''} ${tr(k)}</a>`).join('')}<small>${esc(me.name)} · ${me.role}</small>${sw()}<a onclick="logout()">${tr('out')}</a></nav><main class="main" id="main"></main></div>`;
+const p=P[pg]||P.dash;$('#main').innerHTML=p();const h=$('#main h2');if(h)h.insertAdjacentHTML('afterbegin',`<span class="ic">${IC[pg]||''}</span>`);if(AF[pg])AF[pg]()}
+const own=()=>SC;
+const missing=u=>['blood','ecn','ecp'].filter(k=>!u[k]).length;
+const P={},AF={};
+
+P.dash=()=>{const m=missing(me),n=own().length;return`<h2>Hi ${esc(me.name.split(' ')[0])}</h2><p class="mut">Your emergency readiness at a glance.</p>
+<div class="grid"><div class="card"><div class="stat">${m?'Incomplete':'Ready'}</div><p class="mut">${m?'Add blood group and an emergency contact so responders can act.':'Blood group and emergency contact are on file.'}</p><br><button onclick="pg='${m?'medical':'qr'}';app()">${m?'Complete medical profile':'Open my QR'}</button></div>
+<div class="card"><div class="stat">${me.active?'Active':'Off'}</div><p class="mut">Your QR is ${me.active?'active and can be scanned.':'deactivated – scans are blocked.'}</p><br><button class="b2" onclick="toggleQR()">${me.active?'Deactivate QR':'Activate QR'}</button></div>
+<div class="card"><div class="stat">${n}</div><p class="mut">Times your QR was scanned.</p><br><button class="b2" onclick="pg='hist';app()">View scan history</button></div></div>
+<div class="card" style="margin-top:16px"><h3>Emergency? </h3><button class="sos" onclick="pg='sos';app()">Open SOS</button></div>`};
+async function toggleQR(u=me,byAdmin){try{const r=await API('/users/'+u.id+'/toggle','POST');u.active=r.active;app();toast('QR '+(u.active?'activated':'deactivated'))}catch(e){toast(e.message)}}
+
+const pf=(fields)=>fields.map(([k,l,t])=>t=='ta'?T(k,l,me[k]):t=='sel'?`<label>${l}<select id="${k}">${['','A+','A-','B+','B-','O+','O-','AB+','AB-'].map(o=>`<option ${me[k]==o?'selected':''}>${o}</option>`).join('')}</select></label>`:F(k,l,me[k],t||'text')).join('');
+function saveF(keys,msg){keys.forEach(k=>me[k]=v(k));log(msg);save();toast('Saved');app()}
+P.profile=()=>`<h2>Student profile</h2><p class="mut">Basic details shown on your emergency card.</p><div class="card" style="margin-top:16px"><div style="display:flex;gap:16px;align-items:center;margin-bottom:14px"><div class="av" style="margin:0;background:var(--tl2);color:var(--tl);width:72px;height:72px;flex:none">${me.photo?`<img alt="" src="${me.photo}" style="width:100%;height:100%;object-fit:cover">`:esc(me.name.slice(0,1))}</div><label style="margin:0;flex:1">Profile photo<input type="file" accept="image/*" onchange="photo(this)"></label></div><div class="g2">${pf([['name','Full name'],['roll','Roll number'],['course','Course / year'],['phone','Phone','tel'],['dob','Date of birth','date'],['addr','Home address']])}</div><button onclick="saveF(['name','roll','course','phone','dob','addr'],'Updated student profile')">Save profile</button></div>${pwCard()}`;
+P.medical=()=>`<h2>Medical profile</h2><p class="mut">Keep this accurate – it is what a responder will read.</p><div class="card" style="margin-top:16px"><div class="g2">${pf([['blood','Blood group','sel'],['doc','Family doctor & phone'],['allergies','Allergies','ta'],['cond','Medical conditions','ta'],['meds','Regular medicines','ta']])}</div><button onclick="saveF(['blood','doc','allergies','cond','meds'],'Updated medical profile')">Save medical profile</button></div>`;
+P.emerg=()=>`<h2>Emergency contacts</h2><p class="mut">Who should be called first.</p><div class="card" style="margin-top:16px"><div class="g2">${pf([['ecn','Contact name'],['ecp','Contact phone','tel'],['ecr','Relationship']])}</div><button onclick="saveF(['ecn','ecp','ecr'],'Updated emergency contact')">Save contact</button></div>`;
+
+const BASE=()=>{const l=/localhost|127\.0\.0\.1/.test(location.hostname);return (localStorage.getItem('qrbase')||(l&&CFG.lan)||location.origin).replace(/\/$/,'')};
+const qrText=u=>BASE()+'/e/'+u.id;
+function drawQR(el,u,s=240){el.innerHTML='';if(typeof QRCode=='undefined'){el.textContent='QR library needs internet on first load.';return}new QRCode(el,{text:qrText(u),width:s,height:s,correctLevel:QRCode.CorrectLevel.L})}
+P.qr=()=>`<h2>My QR code</h2><p class="mut">Print it on your ID card, phone lock screen or bag tag.</p>
+<div class="card qrbox" style="margin-top:16px"><div id="qr"></div><div><p><span class="tag ${me.active?'g':'r'}">${me.active?'Active':'Deactivated'}</span></p><p class="mut sm" style="margin:8px 0">Scanner ID: <b>${me.id}</b><br>Opens: ${esc(qrText(me))}</p><button onclick="dlQR()">Download QR image</button> <button class="b2" onclick="previewScan()">Preview what a scan shows</button> <button class="b2" onclick="toggleQR()">${me.active?'Deactivate':'Activate'}</button></div></div>
+<div class="card" style="margin-top:16px"><h3>QR expiry</h3><p class="mut sm" style="margin-bottom:12px">Optional: the emergency page stops opening after this date. Leave blank for no expiry.${me.state=='expired'?' <span class="tag r">Expired</span>':''}</p>${F('exp','Active until',me.expires||'','date')}<button onclick="saveExp()">Save expiry</button></div><div class="card" style="margin-top:16px"><h3>Server address inside the QR</h3><p class="mut sm" style="margin-bottom:12px">The phone must be able to reach this address (same Wi-Fi, or your deployed website). If scanning does not open the page, correct it here.</p>${F('base','Address',BASE())}<button onclick="setBase()">Save address & rebuild QR</button></div>`;
+async function saveExp(){me.expires=v('exp');await save();app();toast(me.expires?'QR will expire on '+me.expires:'Expiry removed')}
+function setBase(){const b=v('base').replace(/\/$/,'');if(!/^https?:\/\//.test(b))return toast('Address must start with http:// or https://');localStorage.setItem('qrbase',b);app();toast('QR rebuilt')}
+function previewScan(){window.open('/e/'+me.id+'?by=Preview','_blank')}
+AF.qr=()=>drawQR($('#qr'),me);
+function dlQR(){const c=$('#qr canvas'),a=document.createElement('a');a.href=c.toDataURL();a.download='qr-medic-'+me.id+'.png';a.click();log('Downloaded QR')}
+
+const emCard=(u,q)=>`<div class="card em"><div class="top">EMERGENCY MEDICAL PROFILE</div><div class="qrbox"><div style="flex:1;min-width:240px"><dl><dt>Name</dt><dd>${esc(u.name)}</dd><dt>Blood group</dt><dd style="color:var(--red);font-size:22px">${esc(u.blood||'Unknown')}</dd><dt>Allergies</dt><dd>${esc(u.allergies||'None reported')}</dd><dt>Conditions</dt><dd>${esc(u.cond||'None reported')}</dd><dt>Medicines</dt><dd>${esc(u.meds||'None')}</dd><dt>Emergency contact</dt><dd>${esc(u.ecn||'-')} ${u.ecr?'('+esc(u.ecr)+')':''} ${u.ecp?`<a href="tel:${esc(u.ecp)}">${esc(u.ecp)}</a>`:''}</dd><dt>Doctor</dt><dd>${esc(u.doc||'-')}</dd><dt>Course / Roll</dt><dd>${esc(u.course)} / ${esc(u.roll)}</dd></dl></div>${q?'<div id="qr"></div>':''}</div></div>`;
+P.card=()=>`<h2>Emergency card</h2><p class="mut">Use “Save as PDF” in the print window.</p><div style="margin:16px 0" class="no-print"><button onclick="window.print();log('Printed emergency card')">Download / print PDF</button></div>${emCard(me,1)}`;
+AF.card=()=>drawQR($('#qr'),me,150);
+
+function summary(u){const w=[];w.push(`${u.name} (${u.course||'student'}) – blood group ${u.blood||'unknown'}.`);
+if(u.allergies)w.push(`⚠ ALLERGIES: ${u.allergies}. Avoid related drugs and foods.`);if(u.cond)w.push(`Known conditions: ${u.cond}.`);if(u.meds)w.push(`Takes: ${u.meds}.`);
+const iv=(u.vacc||[]).map(x=>x.n);if(iv.length)w.push(`Vaccinations: ${iv.join(', ')}.`);
+w.push(u.ecp?`Call ${u.ecn||'emergency contact'} at ${u.ecp} now.`:'No emergency contact on file.');w.push('Priority: check breathing and consciousness, then call local emergency services.');return w.join('\n')}
+P.ai=()=>`<h2>AI emergency summary</h2><p class="mut">A plain-language brief built from your profile for paramedics.</p><div class="card" style="margin-top:16px"><button onclick="aiGen()">Generate summary</button><div class="sum" id="sm">Press generate.</div><p class="sm mut" style="margin-top:10px">Written by the AI model on the server when an API key is configured; otherwise a built-in summary is shown.</p></div>`;
+
+let loc=null;
+P.sos=()=>`<h2>SOS & location</h2><p class="mut">Sends your location and medical details to your emergency contact.</p><div class="card" style="margin-top:16px"><button class="sos" onclick="sos()">SOS – I need help</button><div id="sosr" style="margin-top:14px"></div></div>`;
+function sos(){log('SOS pressed');const show=()=>{const m=loc?`https://maps.google.com/?q=${loc.lat},${loc.lng}`:'location unavailable';const t=encodeURIComponent(`SOS from ${me.name}. Blood: ${me.blood||'?'}. Location: ${m}`);
+$('#sosr').innerHTML=`<p><b>Location:</b> ${loc?`<a target=_blank href="${m}">Open on map</a>`:'Not available – allow location access'}</p><p style="margin-top:10px">${me.ecp?`<a class="btn bred" href="tel:${esc(me.ecp)}">Call ${esc(me.ecn||'contact')}</a> <a class="btn b2" href="sms:${esc(me.ecp)}?body=${t}">Text location</a> `:'<span class="tag r">Add an emergency contact first</span> '}<a class="btn b2" href="tel:112">Call 112</a></p>`};
+navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{loc={lat:p.coords.latitude,lng:p.coords.longitude};log('Shared location');show()},()=>show(),{timeout:8000}):show()}
+P.hosp=()=>`<h2>Hospital finder</h2><p class="mut">Opens nearby hospitals on the map.</p><div class="card" style="margin-top:16px"><a class="btn" target=_blank href="https://www.google.com/maps/search/hospitals+near+me">Hospitals near me</a> <a class="btn b2" target=_blank href="https://www.google.com/maps/search/emergency+room+near+me">Emergency rooms</a> <a class="btn b2" target=_blank href="https://www.google.com/maps/search/pharmacy+near+me">Pharmacies</a></div>`;
+
+const listPage=(key,title,sub,form,row)=>()=>`<h2>${title}</h2><p class="mut">${sub}</p><div class="card" style="margin-top:16px">${form}</div><div class="card" style="margin-top:16px"><table>${me[key].length?me[key].map(row).join(''):'<tr><td class="mut">Nothing added yet.</td></tr>'}</table></div>`;
+P.vacc=listPage('vacc','Vaccination records','Add each vaccine and the date received.',`<div class="g2">${F('vn','Vaccine name')}${F('vd','Date received','','date')}</div><button onclick="addL('vacc',{n:v('vn'),d:v('vd')},'vn')">Add vaccine</button>`,(x,i)=>`<tr><td><b>${esc(x.n)}</b></td><td>${esc(x.d)}</td><td><button class="b2" onclick="delL('vacc',${x.id})">Remove</button></td></tr>`);
+P.rem=listPage('rem','Medicine reminders','A reminder appears while this page is open.',`<div class="g2">${F('rn','Medicine & dose')}${F('rt','Time','08:00','time')}</div><button onclick="addL('rem',{n:v('rn'),t:v('rt')},'rn')">Add reminder</button>`,(x,i)=>`<tr><td><b>${esc(x.n)}</b></td><td>${esc(x.t)}</td><td><button class="b2" onclick="delL('rem',${x.id})">Remove</button></td></tr>`);
+P.rep=listPage('rep','Medical reports','Upload prescriptions or lab reports (images or PDF, up to 400 KB each).',`${F('rf','Choose file','','file','accept="image/*,.pdf"')}<button onclick="upRep()">Upload report</button>`,(x,i)=>`<tr><td><b>${esc(x.n)}</b><div class="sm mut">${esc(x.t)}</div></td><td><a class="btn b2" target="_blank" href="/api/reports/${x.id}">Open</a></td><td><button class="b2" onclick="delL('rep',${x.id})">Remove</button></td></tr>`);
+async function addL(k,o){if(!o.n)return toast('Enter a name first');try{me[k]=await API('/items/'+k,'POST',o);app()}catch(e){toast(e.message)}}
+async function delL(k,id){try{me[k]=await API('/items/'+k+'/'+id,'DELETE');app()}catch(e){toast(e.message)}}
+function upRep(){const f=$('#rf').files[0];if(!f)return toast('Choose a file first');if(f.size>4e5)return toast('File is over 400 KB');const r=new FileReader();r.onload=()=>addL('rep',{n:f.name,d:r.result});r.readAsDataURL(f)}
+setInterval(()=>{if(!me||me.role!='student')return;const d=new Date(),t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');me.rem.filter(x=>x.t==t&&x.fired!=t+d.getDate()).forEach(x=>{x.fired=t+d.getDate();toast('💊 Time for '+x.n)})},20000);
+
+const scanRow=s=>`<tr><td>${esc(s.t)}</td><td>${esc(s.by)}</td><td>${s.loc?`<a target=_blank href="https://maps.google.com/?q=${s.loc}">Map</a>`:'-'}</td><td><span class="tag ${s.ok?'g':'r'}">${s.ok?'Shown':'Blocked'}</span></td></tr>`;
+P.hist=()=>`<h2>Scan history</h2><p class="mut">Every time someone scanned your QR.</p><div class="card" style="margin-top:16px"><table><tr><th>Time</th><th>Scanned by</th><th>Location</th><th>Result</th></tr>${own().map(scanRow).join('')||'<tr><td colspan=4 class="mut">No scans yet.</td></tr>'}</table></div>`;
+P.notif=()=>`<h2>QR scan alerts</h2><p class="mut">You are told whenever your QR is used.</p><div class="grid" style="grid-template-columns:1fr">${own().slice(0,15).map(s=>`<div class="card"><b>${s.ok?'Your QR was scanned':'A blocked scan was attempted'}</b><div class="sm mut">${esc(s.t)} · ${esc(s.by)}</div></div>`).join('')||'<div class="card mut">No alerts yet.</div>'}</div>`;
+
+P.scan=()=>`<h2>QR scanner</h2><p class="mut">Responders: enter the ID printed under the QR, or scan with the camera.</p><div class="card" style="margin-top:16px">${F('sid','Scanner ID (e.g. S1A2B3)')}<input id="sby" value="Responder" style="display:none"><button onclick="doScan(v('sid'))">Look up profile</button> <button class="b2" onclick="cam()">Use camera</button><video id="vid" style="display:none;width:100%;max-width:340px;margin-top:12px;border-radius:14px" playsinline></video></div><div id="scr" style="margin-top:16px"></div>`;
+function guestScan(){$('#root').innerHTML=`<div class="app"><nav class="side"><div class="logo">QR<i>Medic</i></div><a onclick="auth()">← Back to log in</a></nav><main class="main" id="main">${P.scan()}</main></div>`}
+async function doScan(id){id=(id||'').trim().toUpperCase();const out=$('#scr');if(!id)return toast('Enter an ID first');let u;
+try{u=await API('/e/'+encodeURIComponent(id)+'?by='+encodeURIComponent(me?me.name+' ('+me.role+')':'Guest responder'))}catch(e){out.innerHTML='<div class="card"><b>No profile found.</b><p class="mut">Check the ID and try again.</p></div>';return}
+RU=u;out.innerHTML=u.active?resp(u):blocked(u);afterResp(u)}
+async function cam(){if(!('BarcodeDetector'in window))return toast('Camera scan needs Chrome/Edge. Type the ID instead.');
+try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}),vd=$('#vid');vd.style.display='block';vd.srcObject=s;await vd.play();const bd=new BarcodeDetector({formats:['qr_code']});
+const t=setInterval(async()=>{const r=await bd.detect(vd);if(r[0]){const m=r[0].rawValue.match(/\/e\/(\w+)/);clearInterval(t);s.getTracks().forEach(x=>x.stop());vd.style.display='none';if(m)doScan(m[1])}},500)}catch(e){toast('Camera not available')}}
+
+const IC={dash:'🏠',profile:'🎓',medical:'🩺',emerg:'👪',qr:'🔳',card:'🪪',ai:'✨',sos:'🚨',hosp:'🏥',vacc:'💉',rep:'📄',rem:'💊',hist:'🕘',notif:'🔔',scan:'📷',admin:'📊',users:'👥',audit:'🧾'};
+const blocked=u=>'<div class="rp"><div class="sw" style="background:#0d3b43">'+langSel()+'</div><div class="rp-h"><h1>'+(u&&u.reason=='expired'?'QR expired':'QR deactivated')+'</h1><p>'+(u&&u.reason=='expired'?'This profile has passed its expiry date.':'The owner turned this profile off.')+'</p></div><div class="rp-b"><a class="callg" href="tel:112">Call 112</a></div></div>';
+function resp(u){const ini=u.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase(),ch=s=>(s||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span class="chip">${esc(x)}</span>`).join('')||'<span class="mut">None reported</span>';
+const p=esc(u.ecp||''),t=encodeURIComponent('EMERGENCY: '+u.name+' needs help. Blood group '+(u.blood||'?')+'.');
+return `<div class="rp"><div class="bar">🚨 ${tr('bar')}</div><div class="sw" style="background:#0d3b43">${langSel()}</div><div class="rp-h"><div class="pulse"></div><div class="av">${u.photo?`<img alt="" src="${u.photo}" style="width:100%;height:100%;object-fit:cover">`:ini}</div><h1>${esc(u.name)}</h1><p>${esc(u.course||'Student')}</p><p class="sm" style="margin-top:8px">Scanned ${now()}</p><div class="bl">${esc(u.blood||'?')}<small>${tr('blood')}</small></div></div>
+<div class="rp-b"><div class="notice">✅ Profile loaded. Stay calm – call the guardian below.</div>${u.ecp?`<a class="callg" href="tel:${p}">📞 ${tr('callg')}<small>${esc(u.ecn||'')} ${u.ecr?'('+esc(u.ecr)+') ':''}· ${p}</small></a>`:'<div class="callg off">No guardian number on file</div>'}
+<div class="acts"><a class="btn bred" href="tel:112">🚑 ${tr('c112')}</a><button class="b2" onclick="shareLoc('${p}','${t}')">📍 ${tr('sendloc')}</button></div>
+<div class="sec al"><h3>⚠ ${tr('alg')}</h3>${ch(u.allergies)}</div><div class="sec"><h3>${tr('cond')}</h3>${ch(u.cond)}</div><div class="sec"><h3>${tr('meds')}</h3>${ch(u.meds)}</div>
+<div class="sec"><h3>${tr('doc')}</h3><b>${esc(u.doc||'-')}</b></div><div class="sec"><h3>${tr('brief')}</h3><div id="brief" style="white-space:pre-wrap">${esc(summary(u))}</div></div></div>
+<div class="dock">${u.ecp?`<a style="background:#17a34a" href="tel:${p}">📞 Call ${esc(u.ecn||'guardian')}</a>`:'<span></span>'}<a style="background:var(--red)" href="tel:112">112</a></div></div>`}
+function shareLoc(p,t){if(!navigator.geolocation)return toast('Location not supported');navigator.geolocation.getCurrentPosition(g=>{location.href='sms:'+p+'?body='+t+encodeURIComponent(' Location: https://maps.google.com/?q='+g.coords.latitude+','+g.coords.longitude)},()=>toast('Please allow location access'),{timeout:8000})}
+async function showResp(){const id=decodeURIComponent(location.pathname.split('/e/')[1]||''),by=new URLSearchParams(location.search).get('by')||'Phone camera scan';
+try{RU=await API('/e/'+encodeURIComponent(id)+'?by='+encodeURIComponent(by))}catch(e){RU=null;$('#root').innerHTML='<div class="rp"><div class="rp-h"><h1>Profile not found</h1><p>This QR is not registered.</p></div><div class="rp-b"><a class="callg" href="tel:112">Call 112</a></div></div>';return}
+renderResp();afterResp(RU)}
+function renderResp(){$('#root').innerHTML=(RU.active?resp(RU):blocked(RU))+'<p style="text-align:center;padding:4px 14px 90px"><a href="/">Open QR Medic</a></p>';if(BR&&$('#brief'))$('#brief').textContent=BR}
+function afterResp(u){if(!u.active)return;API('/e/'+u.id+'/summary').then(r=>{BR=r.text;if($('#brief'))$('#brief').textContent=BR}).catch(()=>{});
+if(navigator.geolocation&&u.scan)navigator.geolocation.getCurrentPosition(g=>API('/e/'+u.id+'/location','POST',{scan:u.scan,lat:g.coords.latitude,lng:g.coords.longitude}).catch(()=>{}),()=>{},{timeout:10000})}
+/* ---------- ADMIN ---------- */
+const studs=()=>USERS.filter(u=>u.role=='student');
+P.admin=()=>{const s=studs();return`<h2>Admin dashboard</h2><p class="mut">Overview of all registered students.</p><div class="grid"><div class="card"><div class="stat">${s.length}</div>Students</div><div class="card"><div class="stat">${s.filter(u=>u.active).length}</div>Active QR codes</div><div class="card"><div class="stat">${SC.length}</div>Total scans</div><div class="card"><div class="stat">${s.filter(u=>!u.blood).length}</div>Missing blood group</div></div>
+<div class="card" style="margin-top:16px"><h3>Latest scans</h3><table><tr><th>Time</th><th>Student</th><th>By</th><th>Result</th></tr>${SC.slice(0,8).map(x=>`<tr><td>${esc(x.t)}</td><td>${esc(x.name)}</td><td>${esc(x.by)}</td><td><span class="tag ${x.ok?'g':'r'}">${x.ok?'Shown':'Blocked'}</span></td></tr>`).join('')||'<tr><td class="mut">No scans yet.</td></tr>'}</table></div>${pwCard()}`};
+let UF={q:'',b:'',s:''},AQ='';
+const fst=()=>studs().filter(u=>(!UF.q||(u.name+' '+u.email+' '+u.roll).toLowerCase().includes(UF.q.toLowerCase()))&&(!UF.b||u.blood==UF.b)&&(!UF.s||(UF.s=='on')==u.active));
+const urows=()=>fst().map(u=>`<tr><td><b>${esc(u.name)}</b><div class="sm mut">${esc(u.email)}</div></td><td>${esc(u.roll)}</td><td>${esc(u.blood||'-')}</td><td><span class="tag ${u.active?'g':'r'}">${u.active?'Active':'Off'}</span></td><td><button class="b2" onclick="toggleQR(USERS.find(x=>x.id=='${u.id}'),1)">${u.active?'Deactivate':'Activate'}</button></td></tr>`).join('')||'<tr><td class="mut">No matching students.</td></tr>';
+P.users=()=>`<h2>All students</h2><div class="card" style="margin-top:16px"><div class="g2" style="grid-template-columns:2fr 1fr 1fr">${F('uq','Search name, email or roll',UF.q)}<label>Blood group<select id="ub">${['','A+','A-','B+','B-','O+','O-','AB+','AB-'].map(o=>`<option value="${o}" ${UF.b==o?'selected':''}>${o||'Any'}</option>`).join('')}</select></label><label>QR status<select id="us"><option value="">Any</option><option value="on" ${UF.s=='on'?'selected':''}>Active</option><option value="off" ${UF.s=='off'?'selected':''}>Off</option></select></label></div><button class="b2" onclick="csv()">Export CSV (${fst().length})</button></div><div class="card" style="margin-top:16px;overflow:auto"><table><tr><th>Name</th><th>Roll</th><th>Blood</th><th>QR</th><th></th></tr><tbody id="ubody">${urows()}</tbody></table></div>`;
+AF.users=()=>['uq','ub','us'].forEach(i=>$('#'+i).oninput=()=>{UF={q:v('uq'),b:$('#ub').value,s:$('#us').value};$('#ubody').innerHTML=urows()});
+function csv(){const r=[['Name','Email','Roll','Course','Blood','Guardian','Guardian phone','QR active']].concat(fst().map(u=>[u.name,u.email,u.roll,u.course,u.blood,u.ecn,u.ecp,u.active?'yes':'no']));const t=r.map(x=>x.map(c=>'"'+String(c||'').replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='students.csv';a.click()}
+const arows=()=>AUD.filter(a=>!AQ||(a.u+' '+a.a).toLowerCase().includes(AQ.toLowerCase())).map(a=>`<tr><td>${esc(a.t)}</td><td>${esc(a.u)}</td><td>${esc(a.a)}</td></tr>`).join('')||'<tr><td class="mut">No matching entries.</td></tr>';
+P.audit=()=>`<h2>Audit logs</h2><p class="mut">Latest 300 actions across the system.</p><div class="card" style="margin-top:16px">${F('aq','Search by user or action',AQ)}</div><div class="card" style="margin-top:16px;overflow:auto"><table><tr><th>Time</th><th>User</th><th>Action</th></tr><tbody id="abody">${arows()}</tbody></table></div>`;
+AF.audit=()=>$('#aq').oninput=()=>{AQ=v('aq');$('#abody').innerHTML=arows()};
+(async()=>{try{CFG=await API('/config')}catch(e){}
+if(new URLSearchParams(location.search).get('reset')){mode='rs';return auth()}
+if(location.pathname.startsWith('/e/'))return showResp();
+try{me=await API('/me');pg=me.role=='admin'?'admin':'dash';app()}catch(e){auth()}})();
+</script></body></html>
